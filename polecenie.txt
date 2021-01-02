@@ -1,0 +1,27 @@
+DM bialystok
+DM warszawa
+DM bilgoraj
+DM wejherowo
+DM bielsk
+DM lublin
+WM bialystok
+LM bi
+UM bilgoraj
+LM bi
+WM bilgoraj
+DM wroclaw
+LM w
+DM A
+DM B
+DM C
+DM D
+DM E
+DD A B 3
+DD A C 1
+DD D C 2
+DD B C 7
+DD B E 1
+DD D E 7
+DD B D 5
+ND A E
+E
