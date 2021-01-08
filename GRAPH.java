@@ -20,61 +20,26 @@ class comparator implements Comparator<Class_with_name_and_length>{
 public class GRAPH {
     private HashMap<String, Integer> Indices_of_vertices = new HashMap<>();
     private ArrayList<String> Vertix = new ArrayList<>();
-//    private ArrayList<ArrayList<Edge>> Edges_names_and_weights = new ArrayList<>();
     private ArrayList<List_of_indices> Lists_of_indices_for_every_vertix = new ArrayList<>();
-//    private boolean remove(ArrayList<Edge> l, String s) {
-//        return (l.removeIf(i -> i.getName().equals(s)));
-//    }
 
     public void addVertix(String name_city){
-        //implementacja bez hashmapy
-//        Vertix.add(name_city);
-//        Edges_names_and_weights.add(new ArrayList<>());
         Integer int_for_checking = Indices_of_vertices.putIfAbsent(name_city, Vertix.size());
         if(int_for_checking != null)
             return;
         Lists_of_indices_for_every_vertix.add(new List_of_indices());
         Vertix.add(name_city);
     }
-    //pod warunkiem, ze te dwa miasta istnieja i nie sa sobie rowne
+
     public void addEdge(String first_vertex, String second_vertex, int length){
-//        int [] index = new int[2];
-//        //tylko dwie wartosci j przybierze;
-//        int j = 0;
-//        int i = 0;
-//        for(String y : Vertix) {
-//            if(y.equals(first_vertex)) {
-//                index[0] = i;
-//                ++j;
-//            }
-//            if(y.equals(second_vertex)){
-//                index[1] = i;
-//                ++j;
-//            }
-//        if(j == 2)
-//            break;
-//        ++i;
-//        }
-//        Edges_names_and_weights.get(index[1]).add(new Edge(first_vertex, length));
-//        Edges_names_and_weights.get(index[0]).add(new Edge(second_vertex, length));
         Integer int_for_checking1 = Indices_of_vertices.get(first_vertex);
         Integer int_for_checking2 = Indices_of_vertices.get(second_vertex);
-        if(int_for_checking1 == null || int_for_checking2 == null)
+        if(int_for_checking1 == null || int_for_checking2 == null || length <=0 || first_vertex.equals(second_vertex))
             return;
         Lists_of_indices_for_every_vertix.get(int_for_checking1).Add_Edge(second_vertex, length);
         Lists_of_indices_for_every_vertix.get(int_for_checking2).Add_Edge(first_vertex, length);
     }
-    //usuwanie wierzcholka jako string, gdyz nie znamy dlugosci
+
     public void deleteVertix(String name_city){
-//        int index = Vertix.indexOf(name_city);
-//        ArrayList<Edge> temp_to_delete = Edges_names_and_weights.get(index);
-//        for(Edge i : temp_to_delete){
-//            int temp_index = Vertix.indexOf(i.getName());
-//            //znalezienie odpowiedniego indexu w liscie miast
-//            remove(Edges_names_and_weights.get(temp_index), name_city);
-//        }
-//        Vertix.remove(index);
-//        Edges_names_and_weights.remove(index);
         Integer index = Indices_of_vertices.remove(name_city);
         if( index == null)
             return;
@@ -86,36 +51,9 @@ public class GRAPH {
             Vertix.set(index, temp);
         }
         Vertix.remove(Vertix.size() - 1);
-        //if(index != Edges.size() - 1) {
-        //            Edge temp = Edges.get(Edges.size() - 1);
-        //            //zmiana indexu w hashmapie z
-        //            indexes_for_vertices.put(temp.getName(), index);
-        //            Edges.set(index, temp);
-        //        }
-        //        Edges.remove(Edges.size()-1);
     }
+
     public void deleteEdge(String Vertex_name_city, String edge_name_city){
-//        int [] index = new int[2];
-//        int i = 0;
-//        int j = 0;
-//        for(String y : Vertix) {
-//            if(y.equals(Vertex_name_city)) {
-//                index[0] = i;
-//                ++j;
-//            }
-//            else if(y.equals(edge_name_city)){
-//                index[1] = i;
-//                ++j;
-//            }
-//            if(j == 2)
-//                break;
-//            ++i;
-//        }
-//        if(!remove(Edges_names_and_weights.get(index[0]), edge_name_city))
-//            return false;
-//        if(!remove(Edges_names_and_weights.get(index[1]), Vertex_name_city))
-//            return false;
-//        return true;
         Integer int_for_checking1 = Indices_of_vertices.get(Vertex_name_city);
         Integer int_for_checking2 = Indices_of_vertices.get(edge_name_city);
         if(int_for_checking1 == null || int_for_checking2 == null)
@@ -123,12 +61,7 @@ public class GRAPH {
         Lists_of_indices_for_every_vertix.get(int_for_checking1).Delete_Edge(edge_name_city);
         Lists_of_indices_for_every_vertix.get(int_for_checking2).Delete_Edge(Vertex_name_city);
     }
-    public void show(){
-        String wo = "";
-        for(String t: Vertix)
-            wo += t;
-        System.out.println(wo);
-    }
+
     public void showEdge(){
         for(int i = 0; i<Vertix.size(); ++i) {
             System.out.print(Vertix.get(i) + "=");
@@ -137,72 +70,97 @@ public class GRAPH {
                 System.out.println();
         }
     }
+
     public String Dijkstra_SHORTEST_PATH(String from, String to) {
-        Integer s = Indices_of_vertices.get(from);
-        Integer dk = Indices_of_vertices.get(to);
-        if( s==null || dk == null)
+        Integer index_from = Indices_of_vertices.get(from);
+        Integer index_to = Indices_of_vertices.get(to);
+        if(index_from == null || index_to == null)
             return "NIE";
-        //tablica odwiedzonych
         boolean[] visited = new boolean[Vertix.size()];
-        //tablica poprzednikow
-        int [] ancestors = new int[Vertix.size()];
-        //tablica do kolejki priorytetowej
         int[] d = new int[Vertix.size()];
         PriorityQueue<Class_with_name_and_length> queue = new PriorityQueue<>(new comparator());
-        int i = 0;
         for (int j = 0 ; j < Vertix.size() ; ++j)
             d[j] = Integer.MAX_VALUE;
-//        int s = Vertix.indexOf(from);
-//        int dk = Vertix.indexOf(to);
-        d[s] = 0;
-        boolean end = false;
-        ancestors[s] = -1;
-        //jako ile odwiedzonych bedzie traktowane
-        queue.add(new Class_with_name_and_length(s ,d[s]));
+        d[index_from] = 0;
+        queue.add(new Class_with_name_and_length(index_from ,d[index_from]));
         int using = 0;
-        while (i != Vertix.size()) {
-            //wyjecie z kolejki elementu
-            do{
-                if(queue.isEmpty()) {
-                    if (d[dk] == Integer.MAX_VALUE)
-                        return "NIE";
-                    end = true;
-                    break;
-                }
-                using = queue.remove().getIndex();
-            }while(visited[using]);
-            if(end)
-                break;
-            //zaznaczone ze odwiedzone
+        while (!queue.isEmpty()) {
+            using = queue.remove().getIndex();
             visited[using] = true;
-            //przejscie po sasiadach danego wierzcholka
-            int iterator = 0;
-//            for (Edge t : Edges_names_and_weights.get(using)) {
             for(Edge t : Lists_of_indices_for_every_vertix.get(using).getEdges()){
-                //wziecie indexu sasiada
-//                int index_of_d = Vertix.indexOf(t.getName());
                 int index_of_d = Indices_of_vertices.get(t.getName());
-//                if (d[using] + Edges_names_and_weights.get(using).get(iterator).getLength() < d[index_of_d]){
                 if(d[using] + t.getLength() < d[index_of_d]){
-//                    d[index_of_d] = d[using] + Edges_names_and_weights.get(using).get(iterator).getLength();
                     d[index_of_d] = d[using] + t.getLength();
-                    //ustalenie poprzednkika
-                    ancestors[index_of_d] = using;
-                    //jezeli byla relaksacja krawedzi, wrzucamy dany wierzcholek do kolejki priorytetowej
                     if(!visited[index_of_d])
                         queue.add(new Class_with_name_and_length(index_of_d, d[index_of_d]));
                 }
-                ++iterator;
             }
-            ++i;
         }
-        int temp = dk;
-        String way_to_go = "";
-        do{
-            //bierzemy poprzednika rozpatrywanego i przylepiamy go do stringa
-            way_to_go += Vertix.get(temp) + " ";
-            temp = ancestors[temp];
-        }while (temp != -1);
-        return way_to_go + d[dk];
+        return (d[index_to] == Integer.MAX_VALUE ? "NIE" : "" + d[index_to]);
     }
+
+    public void SPFA(String name_city, int []d){
+        boolean [] is_queued = new boolean[Vertix.size()];
+        for(int i = 0; i < Vertix.size() ; ++i)
+            d[i] = Integer.MAX_VALUE;
+        Integer index = Indices_of_vertices.get(name_city);
+        d[index] = 0;
+        PriorityQueue<Class_with_name_and_length> queue = new PriorityQueue<>(new comparator());
+        queue.add(new Class_with_name_and_length(index, d[index]));
+        while(!queue.isEmpty()){
+            int v = queue.remove().getIndex();
+            is_queued[v] = false;
+            //najdluzsza droga
+            for(Edge t: Lists_of_indices_for_every_vertix.get(v).getEdges()){
+                int index_of_t = Indices_of_vertices.get(t.getName());
+                if(d[v] + t.getLength() < d[index_of_t]) {
+                    d[index_of_t] = d[v] + t.getLength();
+                    if(!is_queued[index_of_t]) {
+                        is_queued[index_of_t] = true;
+                        queue.add(new Class_with_name_and_length(index_of_t, d[index_of_t]));
+                    }
+                }
+            }
+        }
+    }
+
+    public int is_cities_shorter(int [] d, int index1, int index2, int length, Stack<Integer> changed_vertices){
+        PriorityQueue<Class_with_name_and_length> queue = new PriorityQueue<>(new comparator());
+        boolean is_queued[] = new boolean[Vertix.size()];
+
+        if(d[index1] == d[index2])
+            return 0;
+
+        int start = (d[index1] > d[index2] ? index2 : index1);
+        int second_one = start == index1 ? index2: index1;
+
+        if(d[start] + length < d[second_one]){
+            d[second_one] = d[start] + length;
+            changed_vertices.push(second_one);
+            queue.add(new Class_with_name_and_length(second_one, d[second_one]));
+        }
+        else
+            return 0;
+        int sum = 0;
+        while(!queue.isEmpty()){
+            int v = queue.remove().getIndex();
+            is_queued[v] = false;
+            ++sum;
+            if(sum == 101)
+                return sum;
+            for(Edge t: Lists_of_indices_for_every_vertix.get(v).getEdges()){
+                int index_of_t = Indices_of_vertices.get(t.getName());
+                if(d[v] + t.getLength() < d[index_of_t]) {
+                    d[index_of_t] = d[v] + t.getLength();
+                    changed_vertices.push(index_of_t);
+                    queue.add(new Class_with_name_and_length(index_of_t, d[index_of_t]));
+                }
+            }
+        }
+        return sum;
+    }
+
+    public boolean existsVertix(String name_city){return Indices_of_vertices.get(name_city) == null ? false : true;}
+    public Integer getVertix(String name_city){return Indices_of_vertices.get(name_city);}
+    public int getSizeOfVertixes(){return Vertix.size();}
 }

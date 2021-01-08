@@ -1,24 +1,15 @@
 package com.company;
 
-
-import java.util.Stack;
-
 public class AVL_TREE {
     private Nodes root;
-    //setter korzenia
-    public void set_root(Nodes checking) {
-        root = checking;
-    }
-    //do wszystkich funkcji (rekurencja :( )
-    public Nodes get_Root() {
-        return root;
-    }
-    //aktualizacja wysokosci
+
+    public void set_root(Nodes checking) {root = checking;}
+
+    public Nodes get_Root() {return root;}
+
     private void updateHeight(Nodes being_checked) {
-//        int quick_math = 1 + max(get_Height_NULL_OR_INT(being_checked.getLeft()),
-        int LEFT = being_checked.getLeft() == null ? 0 : being_checked.getLeft().getHeight();
-        int RIGHT = being_checked.getRight() == null ? 0 : being_checked.getRight().getHeight();
-//        int quick_math = 1 + max( LEFT,RIGHT);
+        int LEFT = (being_checked.getLeft() == null) ? 0 : being_checked.getLeft().getHeight();
+        int RIGHT = (being_checked.getRight() == null) ? 0 : being_checked.getRight().getHeight();
         being_checked.setHeight(1 + Math.max(LEFT, RIGHT));
     }
 
@@ -32,9 +23,8 @@ public class AVL_TREE {
 //        return leftINT - rightINT;
     }
 
-    //    wszystkie rotacje :D
+    //    wszystkie rotacje :D, nazwy takie same jak na wykladzie w celu latwiejszej identyfikacji zamienianych wezlow
     private Nodes RR(Nodes A) {
-//        System.out.println("RR");
         Nodes B = A.getLeft();
         Nodes II = B.getRight();
         B.setRight(A);
@@ -45,7 +35,6 @@ public class AVL_TREE {
     }
 
     private Nodes LL(Nodes A) {
-//        System.out.println("LL");
         Nodes B = A.getRight();
         Nodes II = B.getLeft();
         B.setLeft(A);
@@ -56,7 +45,6 @@ public class AVL_TREE {
     }
 
     private Nodes RL(Nodes A) {
-//        System.out.println("RL");
         Nodes B = A.getRight();
         Nodes C = B.getLeft();
         Nodes III = C.getRight();
@@ -72,7 +60,6 @@ public class AVL_TREE {
     }
 
     private Nodes LR(Nodes A) {
-//        System.out.println("LR");
         Nodes B = A.getLeft();
         Nodes C = B.getRight();
         Nodes III = C.getRight();
@@ -93,7 +80,7 @@ public class AVL_TREE {
             checking = new Nodes(node_to_insert);
             return checking;
         }
-        //skrót od greater - equal- lower
+        //skrót od greater - equal- lower - porownanie stringow. Wieksze w prawo, mniejsze w lewo, jezeli taki sam -anulujemy akcje
         int gel = checking.getName_city().compareTo(node_to_insert);
         if (gel > 0)
             checking.setRight(insert(checking.getRight(), node_to_insert));
@@ -103,20 +90,22 @@ public class AVL_TREE {
             return checking;
         updateHeight(checking);
         int balance = weight_for_rotation(checking);
-        if (balance > 1) {
-            if (weight_for_rotation(checking.getLeft()) == -1)
-                return LR(checking);
-            else
-                return RR(checking);
-        } else if (balance < -1) {
-            if (weight_for_rotation(checking.getRight()) == 1)
-                return RL(checking);
-            else
-                return LL(checking);
-        }
+        if (balance > 1) //{
+            return (weight_for_rotation(checking.getLeft()) == -1) ? LR(checking) : RR(checking);
+//                return LR(checking);
+//            else
+//                return RR(checking);
+//        } else if (balance < -1) {
+        else if (balance < -1)
+            return (weight_for_rotation(checking.getRight()) == 1) ? RL(checking) : LL(checking);
+//                return RL(checking);
+//            else
+//                return LL(checking);
+        //}
         return checking;
     }
 
+    //prywatna metoda do znajdowania nastepnika - maks. w lewo
     private Nodes find_Next_One(Nodes start) {
         Nodes temp = start;
         while (temp.getLeft() != null)
@@ -124,9 +113,10 @@ public class AVL_TREE {
         return temp;
     }
 
+    //usuwanie wezla w drzewie AVL
     public Nodes delete(Nodes checking, String node_to_delete) {
         if (checking == null)
-            return checking;
+            return null;
         int gel = checking.getName_city().compareTo(node_to_delete);
         if (gel > 0)
             checking.setRight(delete(checking.getRight(), node_to_delete));
@@ -156,18 +146,10 @@ public class AVL_TREE {
         //pozycjonowanie drzewa, aktualizacja wysokosci
         updateHeight(checking);
         int balance = weight_for_rotation(checking);
-        if (balance > 1) {
-            if (weight_for_rotation(checking.getLeft()) == -1)
-                return LR(checking);
-            else
-                return RR(checking);
-        }
-        else if (balance < -1) {
-            if (weight_for_rotation(checking.getRight()) == 1)
-                return RL(checking);
-            else
-                return LL(checking);
-        }
+        if (balance > 1)
+            return (weight_for_rotation(checking.getLeft()) == -1) ? LR(checking) : RR(checking);
+        else if (balance < -1)
+            return (weight_for_rotation(checking.getRight()) == 1) ? RL(checking) : LL(checking);
         return checking;
     }
     /*
