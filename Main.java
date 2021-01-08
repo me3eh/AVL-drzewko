@@ -7,22 +7,24 @@ import java.util.Scanner;
 public class Main {
     static boolean for_file_only = true;
     static Nodes file_control(AVL_TREE poob, GRAPH graphis) throws FileNotFoundException {
-        File file = new File("C:\\Users\\matt3\\Desktop\\testy_ASD\\Projekt\\projekt1_in8.txt");
+        File file = new File("C:\\Users\\matt3\\Desktop\\testy_ASD\\Projekt\\projekt1_in5.txt");
         Scanner in = new Scanner(file);
         Method_for_last_one meth = null;
+        TRUE_OR_FALSE truth = new TRUE_OR_FALSE();
         boolean show_time = false;
         for(String line = in.nextLine() ; line != null ; line = (in.hasNextLine()) ? in.nextLine() : null) {
             String[] command_and_data = line.split(" ");
             switch (command_and_data[0]) {
                 case "DM":
-                    poob.set_root(poob.insert(poob.get_Root(), command_and_data[1]));
+                    poob.set_root(poob.insert(poob.get_Root(), command_and_data[1], truth));
                     graphis.addVertix(command_and_data[1]);
+                    truth.toFalse();
                     break;
                 case "UM":
-                    poob.set_root(poob.delete(poob.get_Root(), command_and_data[1]));
+                    poob.set_root(poob.delete(poob.get_Root(), command_and_data[1], truth));
                     graphis.deleteVertix(command_and_data[1]);
+                    break;
                 case "WM":
-//                        start = System.nanoTime();
                     System.out.println((poob.find(poob.get_Root(), command_and_data[1]) ? "TAK" : "NIE"));
                     break;
                 case "LM":
@@ -32,18 +34,13 @@ public class Main {
                     poob.show2(poob.get_Root(),0);
                     break;
                 case "DD":
-                    if(!command_and_data[1].equals(command_and_data[2]) && Integer.parseInt(command_and_data[3]) > 0)
-                        graphis.addEdge(command_and_data[1], command_and_data[2], Integer.parseInt(command_and_data[3]));
+                    graphis.addEdge(command_and_data[1], command_and_data[2], Integer.parseInt(command_and_data[3]));
                     break;
                 case "UD":
-                    if(!command_and_data[1].equals(command_and_data[2]))
-                        graphis.deleteEdge(command_and_data[1], command_and_data[2]);
+                    graphis.deleteEdge(command_and_data[1], command_and_data[2]);
                     break;
                 case "ND":
-                    if(!command_and_data[1].equals(command_and_data[2]))
-                        System.out.println(graphis.Dijkstra_SHORTEST_PATH(command_and_data[1], command_and_data[2]));
-                    else
-                        System.out.println("NIE");
+                    System.out.println(graphis.Dijkstra_SHORTEST_PATH(command_and_data[1], command_and_data[2]));
                     break;
                 case "E":
                     graphis.showEdge();
@@ -53,8 +50,7 @@ public class Main {
                         meth = new Method_for_last_one(graphis);
                         show_time = true;
                     }
-                    if(!command_and_data[2].equals(command_and_data[3]) && Integer.parseInt(command_and_data[4]) > 0)
-                        System.out.println(meth.how_less_amount_of_cities(command_and_data[1], command_and_data[2], command_and_data[3], Integer.parseInt(command_and_data[4])));
+                    System.out.println(meth.how_less_amount_of_cities(command_and_data[1], command_and_data[2], command_and_data[3], Integer.parseInt(command_and_data[4])));
             }
         }
         return poob.get_Root();
@@ -72,6 +68,7 @@ public class Main {
             System.out.println("A. Dodaj droge miedzy miastami");
             System.out.println("B. Usun droge miedzy miastami");
             System.out.println("C. Oblicz droge miedzy dwoma miastami (jej przebieg i dlugosc)");
+            System.out.println("D. Ile miast skróci swoją drogę po dodaniu nowej drogi?");
             System.out.println("Q. Wyjdź z programu");
             System.out.println("Twój wybór:");
         }
@@ -96,15 +93,14 @@ public class Main {
     }
 
     public static void main(String[] args) throws FileNotFoundException {
-        // write your code here
         if(!for_file_only) {
             System.out.println("Witamy w becie programu Sieć Drogowa");
             String word_for_choices;
             int integer_for_choices;
             String word_for_choices_additional_graphs;
             boolean show_must_go_on = true;
-//            Wczytywanie z pliku
             String ch;
+            TRUE_OR_FALSE truth_to_quicken = new TRUE_OR_FALSE();
             AVL_TREE poob = new AVL_TREE();
             GRAPH graphis = new GRAPH();
             Method_for_last_one meth = null;
@@ -120,13 +116,13 @@ public class Main {
                     case '1':
                         MENU_text(1);
                         word_for_choices = in.next();
-                        poob.set_root(poob.insert(poob.get_Root(), word_for_choices));
+                        poob.set_root(poob.insert(poob.get_Root(), word_for_choices, truth_to_quicken));
                         graphis.addVertix(word_for_choices);
                         break;
                     case '2':
                         MENU_text(2);
                         word_for_choices = in.next();
-                        poob.set_root(poob.delete(poob.get_Root(), word_for_choices));
+                        poob.set_root(poob.delete(poob.get_Root(), word_for_choices, truth_to_quicken));
                         graphis.deleteVertix(word_for_choices);
                         break;
                     case '3':
@@ -151,12 +147,10 @@ public class Main {
                         MENU_text(5);
                         word_for_choices = in.next();
                         MENU_text(6);
-                        word_for_choices_additional_graphs=in.next();
+                        word_for_choices_additional_graphs = in.next();
                         MENU_text(7);
-                        integer_for_choices=inInt.nextInt();
-                        //warunek jezeli sie sobie nie rownaja, istnieja juz stworzone takie wierzcholki oraz długosc krawedzi > 0
-                        if(!word_for_choices.equals(word_for_choices_additional_graphs) && integer_for_choices > 0)
-                            graphis.addEdge(word_for_choices, word_for_choices_additional_graphs, integer_for_choices);
+                        integer_for_choices = inInt.nextInt();
+                        graphis.addEdge(word_for_choices, word_for_choices_additional_graphs, integer_for_choices);
                         break;
                     case 'b':
                     case 'B':
@@ -164,8 +158,7 @@ public class Main {
                         word_for_choices = in.next();
                         MENU_text(6);
                         word_for_choices_additional_graphs = in.next();
-                        if(!word_for_choices.equals(word_for_choices_additional_graphs))
-                            graphis.deleteEdge(word_for_choices, word_for_choices_additional_graphs);
+                        graphis.deleteEdge(word_for_choices, word_for_choices_additional_graphs);
                         break;
                     case 'c':
                     case 'C':
@@ -173,15 +166,14 @@ public class Main {
                         word_for_choices = in.next();
                         MENU_text(6);
                         word_for_choices_additional_graphs = in.next();
-                        if(!word_for_choices.equals(word_for_choices_additional_graphs))
-                            System.out.println(graphis.Dijkstra_SHORTEST_PATH(word_for_choices, word_for_choices_additional_graphs));
+                        System.out.println(graphis.Dijkstra_SHORTEST_PATH(word_for_choices, word_for_choices_additional_graphs));
                         break;
                     case 'e':
                     case 'E':
                         graphis.showEdge();
                         break;
-                    case 'f':
-                    case 'F':
+                    case 'd':
+                    case 'D':
                         if(!show_time) {
                             meth = new Method_for_last_one(graphis);
                             show_time = true;
@@ -210,9 +202,8 @@ public class Main {
             long start = System.nanoTime();
             AVL_TREE poob = new AVL_TREE();
             GRAPH graphis = new GRAPH();
-//            Method_for_last_one meth = null;
             poob.set_root(file_control(poob, graphis));
-            System.out.println("Twoj czas to:" + ((System.nanoTime() - start) /1000000000.0f));
+            System.out.println((System.nanoTime() - start)/1000000000.0f +"s");
             }
     }
 }

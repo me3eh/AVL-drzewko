@@ -56,7 +56,7 @@ public class GRAPH {
     public void deleteEdge(String Vertex_name_city, String edge_name_city){
         Integer int_for_checking1 = Indices_of_vertices.get(Vertex_name_city);
         Integer int_for_checking2 = Indices_of_vertices.get(edge_name_city);
-        if(int_for_checking1 == null || int_for_checking2 == null)
+        if(int_for_checking1 == null || int_for_checking2 == null || Vertex_name_city.equals(edge_name_city))
             return;
         Lists_of_indices_for_every_vertix.get(int_for_checking1).Delete_Edge(edge_name_city);
         Lists_of_indices_for_every_vertix.get(int_for_checking2).Delete_Edge(Vertex_name_city);
@@ -74,7 +74,7 @@ public class GRAPH {
     public String Dijkstra_SHORTEST_PATH(String from, String to) {
         Integer index_from = Indices_of_vertices.get(from);
         Integer index_to = Indices_of_vertices.get(to);
-        if(index_from == null || index_to == null)
+        if(index_from == null || index_to == null || from.equals(to))
             return "NIE";
         boolean[] visited = new boolean[Vertix.size()];
         int[] d = new int[Vertix.size()];

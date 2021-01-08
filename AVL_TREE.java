@@ -1,5 +1,7 @@
 package com.company;
 
+import java.util.TreeMap;
+
 public class AVL_TREE {
     private Nodes root;
 
@@ -75,33 +77,33 @@ public class AVL_TREE {
     }
 
     //dodanie elementu do drzewa. Zwraca łączenie, bo może być zastąpiony korzeń.
-    public Nodes insert(Nodes checking, String node_to_insert) {
+    public Nodes insert(Nodes checking, String node_to_insert, TRUE_OR_FALSE truth_to_quicken) {
         if (checking == null) {
             checking = new Nodes(node_to_insert);
             return checking;
         }
-        //skrót od greater - equal- lower - porownanie stringow. Wieksze w prawo, mniejsze w lewo, jezeli taki sam -anulujemy akcje
+        if(truth_to_quicken.getTruth())
+            return checking;
+        //skrót od greater - equal- lower - porownanie stringow.
         int gel = checking.getName_city().compareTo(node_to_insert);
         if (gel > 0)
-            checking.setRight(insert(checking.getRight(), node_to_insert));
+            checking.setRight(insert(checking.getRight(), node_to_insert, truth_to_quicken));
         else if (gel < 0)
-            checking.setLeft(insert(checking.getLeft(), node_to_insert));
+            checking.setLeft(insert(checking.getLeft(), node_to_insert, truth_to_quicken));
         else
             return checking;
         updateHeight(checking);
         int balance = weight_for_rotation(checking);
-        if (balance > 1) //{
+        if(balance == 0)
+            truth_to_quicken.Change_Truth();
+        if (balance > 1) {
+            truth_to_quicken.Change_Truth();
             return (weight_for_rotation(checking.getLeft()) == -1) ? LR(checking) : RR(checking);
-//                return LR(checking);
-//            else
-//                return RR(checking);
-//        } else if (balance < -1) {
-        else if (balance < -1)
+        }
+        else if (balance < -1) {
+            truth_to_quicken.Change_Truth();
             return (weight_for_rotation(checking.getRight()) == 1) ? RL(checking) : LL(checking);
-//                return RL(checking);
-//            else
-//                return LL(checking);
-        //}
+        }
         return checking;
     }
 
@@ -114,14 +116,14 @@ public class AVL_TREE {
     }
 
     //usuwanie wezla w drzewie AVL
-    public Nodes delete(Nodes checking, String node_to_delete) {
+    public Nodes delete(Nodes checking, String node_to_delete, TRUE_OR_FALSE truth_to_quicken) {
         if (checking == null)
             return null;
         int gel = checking.getName_city().compareTo(node_to_delete);
         if (gel > 0)
-            checking.setRight(delete(checking.getRight(), node_to_delete));
+            checking.setRight(delete(checking.getRight(), node_to_delete, truth_to_quicken));
         else if (gel < 0)
-            checking.setLeft(delete(checking.getLeft(), node_to_delete));
+            checking.setLeft(delete(checking.getLeft(), node_to_delete, truth_to_quicken));
         else {
             //jezeli brak dzieci, zastap dany wezel null'em
             if (checking.getLeft() == null && checking.getRight() == null)
@@ -140,7 +142,7 @@ public class AVL_TREE {
                 String temp_name_city = next_one.getName_city();
                 checking.setName_city(temp_name_city);
                 //usuwanie nastepnika
-                checking.setRight(delete(checking.getRight(), temp_name_city));
+                checking.setRight(delete(checking.getRight(), temp_name_city, truth_to_quicken));
             }
         }
         //pozycjonowanie drzewa, aktualizacja wysokosci

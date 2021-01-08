@@ -32,7 +32,7 @@ public class Method_for_last_one {
 
         Integer index1 = graphis.getVertix(name_city_edge1);
         Integer index2 = graphis.getVertix(name_city_edge2);
-        if(index1 == null || index2 == null)
+        if(index1 == null || index2 == null || name_city_edge1.equals(name_city_edge2) || length <=0)
             return "NIE";
 
         while(!changed_vertices.isEmpty()){
