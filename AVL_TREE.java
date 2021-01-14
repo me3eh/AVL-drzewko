@@ -1,7 +1,5 @@
 package com.company;
 
-import java.util.TreeMap;
-
 public class AVL_TREE {
     private Nodes root;
 
@@ -16,8 +14,8 @@ public class AVL_TREE {
     }
 
     private int weight_for_rotation(Nodes being_checked) {
-        if (being_checked == null)
-            return 0;
+//        if (being_checked == null)
+//            return 0;
         int LEFT = being_checked.getLeft() == null ? 0 : being_checked.getLeft().getHeight();
         int RIGHT = being_checked.getRight() == null ? 0 : being_checked.getRight().getHeight();
         return LEFT - RIGHT;
@@ -78,24 +76,26 @@ public class AVL_TREE {
 
     //dodanie elementu do drzewa. Zwraca łączenie, bo może być zastąpiony korzeń.
     public Nodes insert(Nodes checking, String node_to_insert, TRUE_OR_FALSE truth_to_quicken) {
-        if (checking == null) {
-            checking = new Nodes(node_to_insert);
-            return checking;
-        }
-        if(truth_to_quicken.getTruth())
-            return checking;
+        if (checking == null)
+            return new Nodes(node_to_insert);
+//            checking = new Nodes(node_to_insert);
         //skrót od greater - equal- lower - porownanie stringow.
         int gel = checking.getName_city().compareTo(node_to_insert);
         if (gel > 0)
             checking.setRight(insert(checking.getRight(), node_to_insert, truth_to_quicken));
         else if (gel < 0)
             checking.setLeft(insert(checking.getLeft(), node_to_insert, truth_to_quicken));
-        else
+        else {
+            truth_to_quicken.toTrue();
             return checking;
+        }
+        if(truth_to_quicken.getTruth())
+            return checking;
+
         updateHeight(checking);
         int balance = weight_for_rotation(checking);
         if(balance == 0)
-            truth_to_quicken.Change_Truth();
+            truth_to_quicken.toTrue();
         if (balance > 1) {
             truth_to_quicken.Change_Truth();
             return (weight_for_rotation(checking.getLeft()) == -1) ? LR(checking) : RR(checking);
@@ -146,8 +146,12 @@ public class AVL_TREE {
             }
         }
         //pozycjonowanie drzewa, aktualizacja wysokosci
+        if(truth_to_quicken.getTruth())
+            return checking;
         updateHeight(checking);
         int balance = weight_for_rotation(checking);
+        if(balance == -1)
+            truth_to_quicken.toTrue();
         if (balance > 1)
             return (weight_for_rotation(checking.getLeft()) == -1) ? LR(checking) : RR(checking);
         else if (balance < -1)

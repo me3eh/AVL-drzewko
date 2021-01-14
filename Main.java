@@ -5,14 +5,17 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Main {
-    static boolean for_file_only = true;
+    static boolean for_file_only = false;
     static Nodes file_control(AVL_TREE poob, GRAPH graphis) throws FileNotFoundException {
-        File file = new File("C:\\Users\\matt3\\Desktop\\testy_ASD\\Projekt\\projekt1_in5.txt");
+        File file = new File("C:\\Users\\matt3\\Desktop\\testy_ASD\\Projekt\\projekt1_in7.txt");
         Scanner in = new Scanner(file);
         Method_for_last_one meth = null;
+        int how_many_times_scan = in.nextInt() + 1;
         TRUE_OR_FALSE truth = new TRUE_OR_FALSE();
         boolean show_time = false;
-        for(String line = in.nextLine() ; line != null ; line = (in.hasNextLine()) ? in.nextLine() : null) {
+//        for(String line = in.nextLine() ; line != null ; line = (in.hasNextLine()) ? in.nextLine() : null) {
+        for(int lok = 0; lok<how_many_times_scan ; ++lok) {
+            String line  = in.nextLine();
             String[] command_and_data = line.split(" ");
             switch (command_and_data[0]) {
                 case "DM":
@@ -23,6 +26,7 @@ public class Main {
                 case "UM":
                     poob.set_root(poob.delete(poob.get_Root(), command_and_data[1], truth));
                     graphis.deleteVertix(command_and_data[1]);
+                    truth.toFalse();
                     break;
                 case "WM":
                     System.out.println((poob.find(poob.get_Root(), command_and_data[1]) ? "TAK" : "NIE"));
@@ -47,10 +51,10 @@ public class Main {
                     break;
                 case "IS":
                     if(!show_time){
-                        meth = new Method_for_last_one(graphis);
+                        meth = new Method_for_last_one(graphis, command_and_data[1]);
                         show_time = true;
                     }
-                    System.out.println(meth.how_less_amount_of_cities(command_and_data[1], command_and_data[2], command_and_data[3], Integer.parseInt(command_and_data[4])));
+                    System.out.println(meth.how_less_amount_of_cities(command_and_data[2], command_and_data[3], Integer.parseInt(command_and_data[4])));
             }
         }
         return poob.get_Root();
@@ -118,12 +122,14 @@ public class Main {
                         word_for_choices = in.next();
                         poob.set_root(poob.insert(poob.get_Root(), word_for_choices, truth_to_quicken));
                         graphis.addVertix(word_for_choices);
+                        truth_to_quicken.toFalse();
                         break;
                     case '2':
                         MENU_text(2);
                         word_for_choices = in.next();
                         poob.set_root(poob.delete(poob.get_Root(), word_for_choices, truth_to_quicken));
                         graphis.deleteVertix(word_for_choices);
+                        truth_to_quicken.toFalse();
                         break;
                     case '3':
                         MENU_text(3);
@@ -175,18 +181,18 @@ public class Main {
                     case 'd':
                     case 'D':
                         if(!show_time) {
-                            meth = new Method_for_last_one(graphis);
+                            MENU_text(8);
+                            String word1 = in.next();
+                            meth = new Method_for_last_one(graphis, word1);
                             show_time = true;
                         }
-                        MENU_text(8);
-                        String word1 = in.next();
                         MENU_text(5);
                         word_for_choices = in.next();
                         MENU_text(6);
                         word_for_choices_additional_graphs = in.next();
                         MENU_text(7);
                         integer_for_choices = inInt.nextInt();
-                        meth.how_less_amount_of_cities(word1, word_for_choices, word_for_choices_additional_graphs, integer_for_choices);
+                        meth.how_less_amount_of_cities(word_for_choices, word_for_choices_additional_graphs, integer_for_choices);
                         break;
                     case 'q':
                     case 'Q':
@@ -199,11 +205,11 @@ public class Main {
             in.close();
         }
         else{
-            long start = System.nanoTime();
+//            long start = System.nanoTime();
             AVL_TREE poob = new AVL_TREE();
             GRAPH graphis = new GRAPH();
             poob.set_root(file_control(poob, graphis));
-            System.out.println((System.nanoTime() - start)/1000000000.0f +"s");
+//            System.out.println((System.nanoTime() - start)/1000000000.0f +"s");
             }
     }
 }

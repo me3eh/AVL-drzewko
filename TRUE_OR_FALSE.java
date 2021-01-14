@@ -6,4 +6,5 @@ public class TRUE_OR_FALSE {
     public void Change_Truth(){truth = !truth;}
     public boolean getTruth(){return truth;}
     public void toFalse(){truth = false;}
+    public void toTrue(){truth = true;}
 }
