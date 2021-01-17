@@ -8,11 +8,6 @@ public class List_of_indices {
     ArrayList<Edge> Edges = new ArrayList<>();
 
     public void Add_Edge(String name_of_city, int length){
-//        Integer int_for_checking = indexes_for_vertices.get(name_of_city);
-//        if(int_for_checking == null){
-//            Edges.add(new Edge(name_of_city, length));
-//            indexes_for_vertices.put(name_of_city, Edges.size());
-//        }
         Integer int_for_checking = indexes_for_vertices.putIfAbsent(name_of_city, Edges.size());
         if(int_for_checking == null)
             Edges.add(new Edge(name_of_city, length));
@@ -20,13 +15,13 @@ public class List_of_indices {
 
     public void Delete_Edge(String second){
         Integer index = indexes_for_vertices.remove(second);
-        if( index == null)
+        if(index == null)
             return;
         if(index != Edges.size() - 1) {
-            Edge temp = Edges.get(Edges.size() - 1);
+            Edge index_of_last_one = Edges.get(Edges.size() - 1);
             //zmiana indexu w hashmapie
-            indexes_for_vertices.put(temp.getName(), index);
-            Edges.set(index, temp);
+            indexes_for_vertices.put(index_of_last_one.getName(), index);
+            Edges.set(index, index_of_last_one);
         }
         Edges.remove(Edges.size()-1);
     }

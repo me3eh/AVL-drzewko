@@ -236,6 +236,6 @@ public class AVL_TREE {
             count += Count_prefix(checking.getRight(), Prefix_to_Find);
             count += Count_prefix(checking.getLeft(), Prefix_to_Find);
         }
-            return count;
+        return count;
     }
 }

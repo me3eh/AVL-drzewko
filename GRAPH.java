@@ -11,9 +11,7 @@ import java.util.*;
             this.how_far = how_far;
         }
 
-        public int getIndex() {
-            return index;
-        }
+        public int getIndex() {return index;}
 
         public int getHow_far() {
             return how_far;
@@ -52,14 +50,17 @@ import java.util.*;
             Integer index = Indices_of_vertices.remove(name_city);
             if (index == null)
                 return;
+            //dla każdego sąsiada danego wierzcholka usunac obecnosc tego wierzcholka
             for (Edge x : Lists_of_indices_for_every_vertix.get(index).getEdges())
                 Lists_of_indices_for_every_vertix.get(Indices_of_vertices.get(x.getName())).Delete_Edge(name_city);
             if (index != Vertix.size() - 1) {
                 String temp = Vertix.get(Vertix.size() - 1);
+                Lists_of_indices_for_every_vertix.set(index, Lists_of_indices_for_every_vertix.get(Lists_of_indices_for_every_vertix.size() - 1));
                 Indices_of_vertices.put(temp, index);
                 Vertix.set(index, temp);
             }
             Vertix.remove(Vertix.size() - 1);
+            Lists_of_indices_for_every_vertix.remove(Lists_of_indices_for_every_vertix.size() - 1);
         }
 
         public void deleteEdge(String Vertex_name_city, String edge_name_city) {
@@ -79,36 +80,51 @@ import java.util.*;
                     System.out.println();
             }
         }
+        private String way_to_String(int index, int [] ancestors){
+            String k = "" + Vertix.get(index);
+            int temp = ancestors[index];
+            while(temp != -1) {
+                k = Vertix.get(temp) + "->" + k;
+                temp = ancestors[temp];
+            };
+            return k;
+        }
 
-        public String Dijkstra_SHORTEST_PATH(String from, String to) {
+        public String Dijkstra_SHORTEST_PATH(String from, String to, boolean show_way) {
             Integer index_from = Indices_of_vertices.get(from);
             Integer index_to = Indices_of_vertices.get(to);
             if (index_from == null || index_to == null || from.equals(to))
                 return "NIE";
             boolean[] visited = new boolean[Vertix.size()];
             int[] d = new int[Vertix.size()];
+            int[] ancestors = new int[Vertix.size()];
             PriorityQueue<Class_with_name_and_length> queue = new PriorityQueue<>(new comparator());
             for (int j = 0; j < Vertix.size(); ++j)
                 d[j] = Integer.MAX_VALUE;
             d[index_from] = 0;
+            ancestors[index_from] = -1;
             queue.add(new Class_with_name_and_length(index_from, d[index_from]));
             int using;
             while (!queue.isEmpty()) {
                 using = queue.remove().getIndex();
                 if(visited[using])
                     continue;
-                if (using == index_to)
-                    return "" + d[index_to];
+                if (using == index_to) {
+                    if (show_way)
+                        return d[index_to] + ". Droga:" + way_to_String(index_to, ancestors);
+                    else
+                        return "" + d[index_to];
+                }
                 visited[using] = true;
                 for (Edge t : Lists_of_indices_for_every_vertix.get(using).getEdges()) {
                     int index_of_d = Indices_of_vertices.get(t.getName());
                     if (d[using] + t.getLength() < d[index_of_d]) {
                         d[index_of_d] = d[using] + t.getLength();
+                        ancestors[index_of_d] = using;
                         queue.add(new Class_with_name_and_length(index_of_d, d[index_of_d]));
                     }
                 }
             }
-//            return (d[index_to] == Integer.MAX_VALUE ? "NIE" : "" + d[index_to]);
             return "NIE";
         }
 

@@ -14,7 +14,7 @@ public class Main {
         TRUE_OR_FALSE truth = new TRUE_OR_FALSE();
         boolean show_time = false;
 //        for(String line = in.nextLine() ; line != null ; line = (in.hasNextLine()) ? in.nextLine() : null) {
-        for(int lok = 0; lok<how_many_times_scan ; ++lok) {
+        for(int lok = 0; lok < how_many_times_scan ; ++lok) {
             String line  = in.nextLine();
             String[] command_and_data = line.split(" ");
             switch (command_and_data[0]) {
@@ -44,7 +44,7 @@ public class Main {
                     graphis.deleteEdge(command_and_data[1], command_and_data[2]);
                     break;
                 case "ND":
-                    System.out.println(graphis.Dijkstra_SHORTEST_PATH(command_and_data[1], command_and_data[2]));
+                    System.out.println(graphis.Dijkstra_SHORTEST_PATH(command_and_data[1], command_and_data[2], false));
                     break;
                 case "E":
                     graphis.showEdge();
@@ -57,11 +57,12 @@ public class Main {
                     System.out.println(meth.how_less_amount_of_cities(command_and_data[2], command_and_data[3], Integer.parseInt(command_and_data[4])));
             }
         }
+        in.close();
         return poob.get_Root();
     }
     static void MENU_text(int choice){
         if(choice == 0) {
-            System.out.println("---------------");
+            System.out.println("|/\\|-= Drzewa AVL =-|/\\|");
             System.out.println("1. Dodaj miasto");
             System.out.println("2. Usuń miasto");
             System.out.println("3. Wyszukaj miasto o danej nazwie");
@@ -73,6 +74,8 @@ public class Main {
             System.out.println("B. Usun droge miedzy miastami");
             System.out.println("C. Oblicz droge miedzy dwoma miastami (jej przebieg i dlugosc)");
             System.out.println("D. Ile miast skróci swoją drogę po dodaniu nowej drogi?");
+            System.out.println("E. Pokaz drogi między miastami");
+            System.out.println("F. Zmiana drogi głównej (tylko po skorzystaniu z opcji d)");
             System.out.println("Q. Wyjdź z programu");
             System.out.println("Twój wybór:");
         }
@@ -93,17 +96,18 @@ public class Main {
         else if(choice == 8)
             System.out.println("Podaj nazwe glownego miasta");
         else
-            System.out.println("Lel zła opcja.");
+            System.out.println("Zła opcja.");
     }
 
     public static void main(String[] args) throws FileNotFoundException {
         if(!for_file_only) {
             System.out.println("Witamy w becie programu Sieć Drogowa");
+            //Zmienne do wczytywania z wejscia
             String word_for_choices;
+            String ch;
             int integer_for_choices;
             String word_for_choices_additional_graphs;
             boolean show_must_go_on = true;
-            String ch;
             TRUE_OR_FALSE truth_to_quicken = new TRUE_OR_FALSE();
             AVL_TREE poob = new AVL_TREE();
             GRAPH graphis = new GRAPH();
@@ -118,65 +122,92 @@ public class Main {
                 while(ch.length() != 1);
                 switch (ch.charAt(0)) {
                     case '1':
-                        MENU_text(1);
-                        word_for_choices = in.next();
-                        poob.set_root(poob.insert(poob.get_Root(), word_for_choices, truth_to_quicken));
-                        graphis.addVertix(word_for_choices);
-                        truth_to_quicken.toFalse();
+                        if(!show_time) {
+                            MENU_text(1);
+                            word_for_choices = in.next();
+                            poob.set_root(poob.insert(poob.get_Root(), word_for_choices, truth_to_quicken));
+                            graphis.addVertix(word_for_choices);
+                            truth_to_quicken.toFalse();
+                        }
+                        else
+                            System.out.println("Użyłeś ostatniej opcji");
                         break;
                     case '2':
-                        MENU_text(2);
-                        word_for_choices = in.next();
-                        poob.set_root(poob.delete(poob.get_Root(), word_for_choices, truth_to_quicken));
-                        graphis.deleteVertix(word_for_choices);
-                        truth_to_quicken.toFalse();
+                        if(!show_time) {
+                            MENU_text(2);
+                            word_for_choices = in.next();
+                            poob.set_root(poob.delete(poob.get_Root(), word_for_choices, truth_to_quicken));
+                            graphis.deleteVertix(word_for_choices);
+                            truth_to_quicken.toFalse();
+                        }
+                        else
+                            System.out.println("Użyłeś ostatniej opcji");
                         break;
                     case '3':
-                        MENU_text(3);
-                        word_for_choices = in.next();
-                        System.out.println((poob.find(poob.get_Root(), word_for_choices) ? "TAK" : "NIE"));
+                        if(!show_time) {
+                            MENU_text(3);
+                            word_for_choices = in.next();
+                            System.out.println((poob.find(poob.get_Root(), word_for_choices) ? "TAK" : "NIE"));
+                        }
+                        else
+                            System.out.println("Użyłeś ostatniej opcji");
                         break;
                     case '4':
-                        MENU_text(4);
-                        word_for_choices = in.next();
-                        int count = poob.Count_prefix(poob.get_Root(), word_for_choices);
-                        System.out.println("Znaleziono: " + count + " o prefiksie " + word_for_choices);
+                        if(!show_time) {
+                            MENU_text(4);
+                            word_for_choices = in.next();
+                            int count = poob.Count_prefix(poob.get_Root(), word_for_choices);
+                            System.out.println("Znaleziono: " + count + " o prefiksie " + word_for_choices);
+                        }
+                        else
+                            System.out.println("Użyłeś ostatniej opcji");
                         break;
                     case '5':
                         poob.show2(poob.get_Root(), 0);
                         break;
                     case '6':
-                        poob.set_root(file_control(poob, graphis));
+                        if(!show_time)
+                            poob.set_root(file_control(poob, graphis));
+                        else
+                            System.out.println("Użyłeś ostatniej opcji");
                         break;
                     case 'a':
                     case 'A':
-                        MENU_text(5);
-                        word_for_choices = in.next();
-                        MENU_text(6);
-                        word_for_choices_additional_graphs = in.next();
-                        MENU_text(7);
-                        integer_for_choices = inInt.nextInt();
-                        graphis.addEdge(word_for_choices, word_for_choices_additional_graphs, integer_for_choices);
+                        if(!show_time) {
+                            MENU_text(5);
+                            word_for_choices = in.next();
+                            MENU_text(6);
+                            word_for_choices_additional_graphs = in.next();
+                            MENU_text(7);
+                            integer_for_choices = inInt.nextInt();
+                            graphis.addEdge(word_for_choices, word_for_choices_additional_graphs, integer_for_choices);
+                        }
+                        else
+                            System.out.println("Użyłeś ostatniej opcji");
                         break;
                     case 'b':
                     case 'B':
-                        MENU_text(5);
-                        word_for_choices = in.next();
-                        MENU_text(6);
-                        word_for_choices_additional_graphs = in.next();
-                        graphis.deleteEdge(word_for_choices, word_for_choices_additional_graphs);
+                        if(!show_time) {
+                            MENU_text(5);
+                            word_for_choices = in.next();
+                            MENU_text(6);
+                            word_for_choices_additional_graphs = in.next();
+                            graphis.deleteEdge(word_for_choices, word_for_choices_additional_graphs);
+                        }
+                        else
+                            System.out.println("Użyłeś ostatniej opcji");
                         break;
                     case 'c':
                     case 'C':
-                        MENU_text(5);
-                        word_for_choices = in.next();
-                        MENU_text(6);
-                        word_for_choices_additional_graphs = in.next();
-                        System.out.println(graphis.Dijkstra_SHORTEST_PATH(word_for_choices, word_for_choices_additional_graphs));
-                        break;
-                    case 'e':
-                    case 'E':
-                        graphis.showEdge();
+                        if(!show_time) {
+                            MENU_text(5);
+                            word_for_choices = in.next();
+                            MENU_text(6);
+                            word_for_choices_additional_graphs = in.next();
+                            System.out.println(graphis.Dijkstra_SHORTEST_PATH(word_for_choices, word_for_choices_additional_graphs, true));
+                        }
+                        else
+                            System.out.println("Użyłeś ostatniej opcji");
                         break;
                     case 'd':
                     case 'D':
@@ -192,7 +223,22 @@ public class Main {
                         word_for_choices_additional_graphs = in.next();
                         MENU_text(7);
                         integer_for_choices = inInt.nextInt();
-                        meth.how_less_amount_of_cities(word_for_choices, word_for_choices_additional_graphs, integer_for_choices);
+                        System.out.println(meth.how_less_amount_of_cities(word_for_choices, word_for_choices_additional_graphs, integer_for_choices));
+                        break;
+//                    czysto estetyczne
+                    case 'e':
+                    case 'E':
+                        graphis.showEdge();
+                        break;
+                    case 'f':
+                    case 'F':
+                        if(show_time) {
+                            MENU_text(8);
+                            String word1 = in.next();
+                            meth.Change_city(word1);
+                        }
+                        else
+                            System.out.println("Na poczatku przystąp do punktu d");
                         break;
                     case 'q':
                     case 'Q':
@@ -203,13 +249,12 @@ public class Main {
                 }
             } while (show_must_go_on);
             in.close();
+            inInt.close();
         }
         else{
-//            long start = System.nanoTime();
             AVL_TREE poob = new AVL_TREE();
             GRAPH graphis = new GRAPH();
             poob.set_root(file_control(poob, graphis));
-//            System.out.println((System.nanoTime() - start)/1000000000.0f +"s");
             }
     }
 }
