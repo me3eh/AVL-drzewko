@@ -14,8 +14,6 @@ public class AVL_TREE {
     }
 
     private int weight_for_rotation(Nodes being_checked) {
-//        if (being_checked == null)
-//            return 0;
         int LEFT = being_checked.getLeft() == null ? 0 : being_checked.getLeft().getHeight();
         int RIGHT = being_checked.getRight() == null ? 0 : being_checked.getRight().getHeight();
         return LEFT - RIGHT;
@@ -78,7 +76,6 @@ public class AVL_TREE {
     public Nodes insert(Nodes checking, String node_to_insert, TRUE_OR_FALSE truth_to_quicken) {
         if (checking == null)
             return new Nodes(node_to_insert);
-//            checking = new Nodes(node_to_insert);
         //skrót od greater - equal- lower - porownanie stringow.
         int gel = checking.getName_city().compareTo(node_to_insert);
         if (gel > 0)
@@ -96,12 +93,12 @@ public class AVL_TREE {
         int balance = weight_for_rotation(checking);
         if(balance == 0)
             truth_to_quicken.toTrue();
-        if (balance > 1) {
-            truth_to_quicken.Change_Truth();
+        else if (balance > 1) {
+            truth_to_quicken.toTrue();
             return (weight_for_rotation(checking.getLeft()) == -1) ? LR(checking) : RR(checking);
         }
         else if (balance < -1) {
-            truth_to_quicken.Change_Truth();
+            truth_to_quicken.toTrue();
             return (weight_for_rotation(checking.getRight()) == 1) ? RL(checking) : LL(checking);
         }
         return checking;
@@ -128,68 +125,43 @@ public class AVL_TREE {
             //jezeli brak dzieci, zastap dany wezel null'em
             if (checking.getLeft() == null && checking.getRight() == null)
                 return null;
+
             //jezeli tylko prawe dziecko, przylacz je do ojca
             else if (checking.getLeft() == null)
                 return checking.getRight();
+
             //jezeli tylko lewe dziecko, przylacz je do ojca
             else if (checking.getRight() == null)
                 return checking.getLeft();
-            //jezeli dwoje dzieci, znajdz nastepnik, zamien jego nazwe z naszym rozpatrywanym wezlem i usun nastepnik
+
+            //jezeli dwoje dzieci
             else {
+
                 //znajdowanie nastepnika
                 Nodes next_one = find_Next_One(checking.getRight());
+
                 //zastapienie nazwy miasta usuwanego wezla z nastepnikiem
                 String temp_name_city = next_one.getName_city();
                 checking.setName_city(temp_name_city);
+
                 //usuwanie nastepnika
                 checking.setRight(delete(checking.getRight(), temp_name_city, truth_to_quicken));
             }
         }
-        //pozycjonowanie drzewa, aktualizacja wysokosci
+
         if(truth_to_quicken.getTruth())
             return checking;
         updateHeight(checking);
         int balance = weight_for_rotation(checking);
-        if(balance == -1)
+        if(balance == -1 || balance == 1)
             truth_to_quicken.toTrue();
-        if (balance > 1)
+        else if (balance > 1)
             return (weight_for_rotation(checking.getLeft()) == -1) ? LR(checking) : RR(checking);
         else if (balance < -1)
             return (weight_for_rotation(checking.getRight()) == 1) ? RL(checking) : LL(checking);
         return checking;
     }
-    /*
-    //pokazanie wszystkich elementów. Złożoność n, iteracyjnie ze stosem
-    public void show() {
-        if(root == null) {
-            System.out.println("NULL");
-            return;
-        }
-        Stack<Nodes> lil_stack = new Stack<>();
-        Stack<Integer> nr_of_space = new Stack<>();
-        lil_stack.push(root);
-        root.setLevel(0);
-        nr_of_space.push(0);
-        while (!lil_stack.isEmpty()) {
-            Nodes x = lil_stack.pop();
-            int y = nr_of_space.pop();
-            String word = "";
-            for (int i = 0; i < y; ++i)
-                word += "\t";
-            System.out.println((x == null) ? word + "NULL" : word + x.getName_city());
-            if (x == null)
-                continue;
-            if (x.getLeft() != null)
-                x.getLeft().setLevel(x.getLevel() + 1);
-            if (x.getRight() != null)
-                x.getRight().setLevel(x.getLevel() + 1);
-            for (int i = 0; i < 2; ++i)
-                nr_of_space.push(x.getLevel() + 1);
-            lil_stack.push(x.getRight());
-            lil_stack.push(x.getLeft());
-        }
-    }
-    */
+
     //wypisanie drzewa. Rekurencyjnie
     public void show2(Nodes origin, int number_space){
         String word = "";
@@ -221,12 +193,14 @@ public class AVL_TREE {
             return 0;
         int count = 0;
         int gel;
+
         if(checking.getName_city().length() < Prefix_to_Find.length())
             gel = checking.getName_city().compareTo(Prefix_to_Find);
         else {
             String substring_of_city = checking.getName_city().substring(0, Prefix_to_Find.length());
             gel = substring_of_city.compareTo(Prefix_to_Find);
         }
+
         if(gel > 0)
             count += Count_prefix(checking.getRight(), Prefix_to_Find);
         else if(gel < 0)

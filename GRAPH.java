@@ -86,7 +86,7 @@ import java.util.*;
             while(temp != -1) {
                 k = Vertix.get(temp) + "->" + k;
                 temp = ancestors[temp];
-            };
+            }
             return k;
         }
 
@@ -154,7 +154,7 @@ import java.util.*;
 
         public int is_cities_shorter(int[] d, int index1, int index2, int length, Stack<Integer> changed_vertices) {
             PriorityQueue<Class_with_name_and_length> queue = new PriorityQueue<>(new comparator());
-            boolean visited[] = new boolean[Vertix.size()];
+            boolean [] visited = new boolean[Vertix.size()];
             if (d[index1] == d[index2])
                 return 0;
             int start = (d[index1] > d[index2] ? index2 : index1);
