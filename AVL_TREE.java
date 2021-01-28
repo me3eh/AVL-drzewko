@@ -138,11 +138,11 @@ public class AVL_TREE {
             else {
 
                 //znajdowanie nastepnika
-                Nodes next_one = find_Next_One(checking.getRight());
+                Nodes next_one = find_Next_One( checking.getRight() );
 
                 //zastapienie nazwy miasta usuwanego wezla z nastepnikiem
                 String temp_name_city = next_one.getName_city();
-                checking.setName_city(temp_name_city);
+                checking.setName_city( temp_name_city );
 
                 //usuwanie nastepnika
                 checking.setRight(delete(checking.getRight(), temp_name_city, truth_to_quicken));
