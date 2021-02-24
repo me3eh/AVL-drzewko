@@ -4,11 +4,11 @@ import java.util.Arrays;
 import java.util.Stack;
 
 public class Method_for_last_one {
-    boolean is_main_city_exists = true;
-    Stack<Integer> changed_vertices = new Stack<>();
-    int [] d;
-    int [] d_Copy;
-    GRAPH graphis;
+    private boolean is_main_city_exists = true;
+    private Stack<Integer> changed_vertices = new Stack<>();
+    private int [] d;
+    private int [] d_Copy;
+    private GRAPH graphis;
 
     public Method_for_last_one(GRAPH gr, String name_city_main){
         if(!gr.existsVertix(name_city_main))

@@ -5,9 +5,9 @@ import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Main {
-    static boolean for_file_only = false;
+    static boolean for_file_only = true;
     static Nodes file_control(AVL_TREE poob, GRAPH graphis) throws FileNotFoundException {
-        File file = new File("C:\\Users\\matt3\\Desktop\\testy_ASD\\Projekt\\projekt1_in8.txt");
+        File file = new File("C:\\Users\\matt3\\Desktop\\testy_ASD\\Projekt\\projekt1_inX.txt");
         Scanner in = new Scanner(file);
         Method_for_last_one meth = null;
         int how_many_times_scan = in.nextInt() + 1;
